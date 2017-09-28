@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.allinpay.wjt.mapper.TChanlqyInfoMapper">
+  <resultMap id="BaseResultMap" type="com.allinpay.wjt.model.TChanlqyInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="mer_id" jdbcType="VARCHAR" property="merId" />
+    <id column="member_id" jdbcType="VARCHAR" property="memberId" />
+    <id column="intfc_id" jdbcType="VARCHAR" property="intfcId" />
+    <result column="qy_batchId" jdbcType="VARCHAR" property="qyBatchid" />
+    <result column="intfc_name" jdbcType="VARCHAR" property="intfcName" />
+    <result column="query_status" jdbcType="VARCHAR" property="queryStatus" />
+    <result column="rediskey" jdbcType="VARCHAR" property="rediskey" />
+    <result column="insertime" jdbcType="TIMESTAMP" property="insertime" />
+    <result column="erroreason" jdbcType="VARCHAR" property="erroreason" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, mer_id, member_id, intfc_id, qy_batchId, intfc_name, query_status, rediskey, 
+    insertime, erroreason
+  </sql>
+  <select id="listTChanlqyInfo" resultMap="BaseResultMap">
+    select * from T_CHANLQY_INFO
+  </select>
+
+  <select id="findChanlqyInfoByParams" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select * from T_CHANLQY_INFO
+    WHERE 1=1
+    <if test="merId != null">
+     AND mer_id=#{merId}
+    </if>
+    <if test="memberId != null">
+      AND member_id=#{memberId}
+    </if>
+    <if test="intfcId != null">
+      AND intfc_id=#{intfcId}
+    </if>
+    <if test="qyBatchid != null">
+      AND qy_batchId=#{qyBatchid}
+    </if>
+    <if test="intfcName != null">
+      AND intfc_name=#{intfcName}
+    </if>
+    <if test="queryStatus != null">
+      AND query_status=#{queryStatus}
+    </if>
+    <if test="rediskey != null">
+      AND rediskey=#{rediskey}
+    </if>
+    <if test="insertime != null">
+      AND insertime=#{insertime}
+    </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.allinpay.wjt.model.TChanlqyInfoKey">
+    delete from T_CHANLQY_INFO
+    where id = #{id,jdbcType=INTEGER}
+      and mer_id = #{merId,jdbcType=VARCHAR}
+      and member_id = #{memberId,jdbcType=VARCHAR}
+      and intfc_id = #{intfcId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.allinpay.wjt.model.TChanlqyInfo">
+    insert into T_CHANLQY_INFO (id, mer_id, member_id, 
+      intfc_id, qy_batchId, intfc_name, 
+      query_status, rediskey, insertime, 
+      erroreason)
+    values (#{id,jdbcType=INTEGER}, #{merId,jdbcType=VARCHAR}, #{memberId,jdbcType=VARCHAR}, 
+      #{intfcId,jdbcType=VARCHAR}, #{qyBatchid,jdbcType=VARCHAR}, #{intfcName,jdbcType=VARCHAR}, 
+      #{queryStatus,jdbcType=VARCHAR}, #{rediskey,jdbcType=VARCHAR}, #{insertime,jdbcType=TIMESTAMP}, 
+      #{erroreason,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.allinpay.wjt.model.TChanlqyInfo">
+    insert into T_CHANLQY_INFO
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="merId != null">
+        mer_id,
+      </if>
+      <if test="memberId != null">
+        member_id,
+      </if>
+      <if test="intfcId != null">
+        intfc_id,
+      </if>
+      <if test="qyBatchid != null">
+        qy_batchId,
+      </if>
+      <if test="intfcName != null">
+        intfc_name,
+      </if>
+      <if test="queryStatus != null">
+        query_status,
+      </if>
+      <if test="rediskey != null">
+        rediskey,
+      </if>
+      <if test="insertime != null">
+        insertime,
+      </if>
+      <if test="erroreason != null">
+        erroreason,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="merId != null">
+        #{merId,jdbcType=VARCHAR},
+      </if>
+      <if test="memberId != null">
+        #{memberId,jdbcType=VARCHAR},
+      </if>
+      <if test="intfcId != null">
+        #{intfcId,jdbcType=VARCHAR},
+      </if>
+      <if test="qyBatchid != null">
+        #{qyBatchid,jdbcType=VARCHAR},
+      </if>
+      <if test="intfcName != null">
+        #{intfcName,jdbcType=VARCHAR},
+      </if>
+      <if test="queryStatus != null">
+        #{queryStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="rediskey != null">
+        #{rediskey,jdbcType=VARCHAR},
+      </if>
+      <if test="insertime != null">
+        #{insertime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="erroreason != null">
+        #{erroreason,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.allinpay.wjt.model.TChanlqyInfo">
+    update T_CHANLQY_INFO
+    <set>
+      <if test="qyBatchid != null">
+        qy_batchId = #{qyBatchid,jdbcType=VARCHAR},
+      </if>
+      <if test="intfcName != null">
+        intfc_name = #{intfcName,jdbcType=VARCHAR},
+      </if>
+      <if test="queryStatus != null">
+        query_status = #{queryStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="rediskey != null">
+        rediskey = #{rediskey,jdbcType=VARCHAR},
+      </if>
+      <if test="insertime != null">
+        insertime = #{insertime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="erroreason != null">
+        erroreason = #{erroreason,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+      and mer_id = #{merId,jdbcType=VARCHAR}
+      and member_id = #{memberId,jdbcType=VARCHAR}
+      and intfc_id = #{intfcId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.allinpay.wjt.model.TChanlqyInfo">
+    update T_CHANLQY_INFO
+    set qy_batchId = #{qyBatchid,jdbcType=VARCHAR},
+      intfc_name = #{intfcName,jdbcType=VARCHAR},
+      query_status = #{queryStatus,jdbcType=VARCHAR},
+      rediskey = #{rediskey,jdbcType=VARCHAR},
+      insertime = #{insertime,jdbcType=TIMESTAMP},
+      erroreason = #{erroreason,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+      and mer_id = #{merId,jdbcType=VARCHAR}
+      and member_id = #{memberId,jdbcType=VARCHAR}
+      and intfc_id = #{intfcId,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    scan: 当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。
+
+    scanPeriod: 设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。
+
+    debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。
+    <configurationscan="true"scanPeriod="60 seconds"debug="false">
+-->
+<configuration debug="false" >
+
+    <contextName>channel-credit-zm</contextName>
+    <!-- 
+                    两个属性 key:标识此<timestamp> 的名字；datePattern：设置将当前时间（解析配置文件的时间）转换为字符串的模式，遵循java.txt.SimpleDateFormat的格式。
+        <timestampkey="bySecond"datePattern="yyyyMMdd'T'HHmmss"/>  
+        <contextName>${bySecond}</contextName> 
+     -->
+    <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->  
+    <property name="LOG_HOME" value="/log" />  
+    <!-- 
+        
+        replace(p ){r, t} p 为日志内容，r 是正则表达式，将p 中符合r 的内容替换为t 。例如， "%replace(%msg){'\s', ''}"
+    -->
+    <property name="LOG_FILE_PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss:SSS}]-[%-5p]-[%t]-[%c.%M:%L] [${ip}]-[${type}]-[%m] %n" />  
+    
+    <!-- 控制台输出 -->   
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoder 默认配置为PatternLayoutEncoder -->  
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder"> 
+             <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符--> 
+            <!-- <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern> -->   
+             <pattern>${LOG_FILE_PATTERN}</pattern>   
+        </encoder> 
+    </appender>
+    <!-- 
+        FileAppender:
+
+		把日志添加到文件，有以下子节点：
+		
+		<file>：被写入的文件名，可以是相对目录，也可以是绝对目录，如果上级目录不存在会自动创建，没有默认值。
+		
+		<append>：如果是 true，日志被追加到文件结尾，如果是 false，清空现存文件，默认是true。
+		
+		<encoder>：对记录事件进行格式化。（具体参数稍后讲解 ）
+		
+		<prudent>：如果是 true，日志会被安全的写入文件，即使其他的FileAppender也在向此文件做写入操作，效率低，默认是 false。
+		
+		<appendername="FILE"class="ch.qos.logback.core.FileAppender"> 
+		    <file>testFile.log</file> 
+		    <append>true</append> 
+		    <encoder> 
+		      <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern> 
+		    </encoder> 
+		  </appender> 
+     -->
+    
+    <!-- 按照每天生成日志文件 -->   
+    <appender name="FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">   
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名-->
+            <FileNamePattern>${LOG_HOME}/channel-credit-zm.log.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>   
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder"> 
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符--> 
+            <!-- <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern> -->   
+            <pattern>${LOG_FILE_PATTERN}</pattern>   
+        </encoder> 
+        <!--日志文件最大的大小-->
+       <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+         <MaxFileSize>10MB</MaxFileSize>
+       </triggeringPolicy>
+    </appender> 
+    <!--myibatis log configure--> 
+    <!-- 
+        <loger>
+        name:用来指定受此loger约束的某一个包或者具体的某一个类。
+		
+		level:用来设置打印级别，大小写无关：TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF，还有一个特俗值INHERITED或者同义词NULL，代表强制执行上级的级别。
+		如果未设置此属性，那么当前loger将会继承上级的级别。
+		
+		addtivity:是否向上级loger传递打印信息。默认是true。
+
+        <loger>可以包含零个或多个<appender-ref>元素，标识这个appender将会添加到这个loger。
+     -->
+    <logger name="com.apache.ibatis" level="TRACE"/>
+    <logger name="java.sql.Connection" level="DEBUG"/>
+    <logger name="java.sql.Statement" level="DEBUG"/>
+    <logger name="java.sql.PreparedStatement" level="DEBUG"/>
+    <logger name="com.allinpay" level="DEBUG"/>
+    
+    
+     <!--日志异步到数据库 -->  
+    <!-- <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+              日志异步到数据库 
+        <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+                连接池 
+           <dataSource class="com.mchange.v2.c3p0.ComboPooledDataSource">
+              <driverClass>com.mysql.jdbc.Driver</driverClass>
+              <url>jdbc:mysql://127.0.0.1:3306/databaseName</url>
+              <user>root</user>
+              <password>root</password>
+            </dataSource>
+        </connectionSource>
+	  </appender>
+	 -->
+	 
+	 
+	  <!-- 日志输出级别 -->
+    <!-- <root>可以包含零个或多个<appender-ref>元素，标识这个appender将会添加到这个loger。 -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+    </root> 
+ </configuration>
